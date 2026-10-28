@@ -1,3 +1,15 @@
 <Solution>
-  <Project Path="Bookstore/Bookstore.csproj" />
+  <Folder Name="/Solution Items/">
+    <File Path="docker-compose.yml" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Bookstore.Api/Bookstore.Api.csproj" />
+    <Project Path="src/Bookstore.Application/Bookstore.Application.csproj" />
+    <Project Path="src/Bookstore.Domain/Bookstore.Domain.csproj" />
+    <Project Path="src/Bookstore.Infrastructure/Bookstore.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Bookstore.UnitTests/Bookstore.UnitTests.csproj" />
+  </Folder>
 </Solution>

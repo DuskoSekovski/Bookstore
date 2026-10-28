@@ -1,0 +1,41 @@
+services:
+  bookstore-db:
+    image: "mcr.microsoft.com/mssql/server:2022-latest"
+    container_name: "bookstore-sql-server"
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "YourSecurePassword123!"
+      MSSQL_PID: "Developer"
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql-data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools18/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "YourSecurePassword123!", "-Q", "SELECT 1", "-C"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  bookstore-api:
+    image: bookstore-api:latest
+    container_name: "bookstore-api-service"
+    build:
+      context: .
+      dockerfile: src/Bookstore.Api/Dockerfile
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=bookstore-db,1433;Database=BookstoreDb;User Id=sa;Password=YourSecurePassword123!;TrustServerCertificate=True;
+      - OAuth__ClientCredentials__ClientId=admin-client
+      - OAuth__ClientCredentials__ClientSecret=super-secret-key
+      - OAuth__Implicit__RedirectUri=http://localhost:8080/swagger/oauth2-redirect.html
+    depends_on:
+      bookstore-db:
+        condition: service_healthy
+    
+
+volumes:
+  mssql-data:
+    driver: local
